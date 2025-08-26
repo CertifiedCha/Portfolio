@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/assets/logo0-3305e1ac.png" />
-    <link rel="apple-touch-icon" type="image/svg+xml" href="/assets/logo0-3305e1ac.png" />
+    <link
+      rel="apple-touch-icon"
+      type="image/svg+xml"
+      href="/assets/logo0-3305e1ac.png"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap"
       rel="stylesheet"
@@ -33,476 +37,491 @@
     />
     <meta property="og:image:type" content="image/png" />
     <script type="module" crossorigin src="/assets/index-01ffa2b3.js"></script>
-    <link rel="stylesheet" href="/assets/index-e69edc47.css">
+    <link rel="stylesheet" href="/assets/index-e69edc47.css" />
   </head>
   <body>
-    <div id="root"></div>
-    
-    <audio id="easter-audio" src="easter-egg.mp3" preload="auto"></audio>
+    <div id="main-content-wrapper">
+      <div id="root"></div>
 
-    <style>
-      /* ====== BASE LAYERS ====== */
-      #relapse-blur {
-        position: fixed;
-        inset: 0;
-        backdrop-filter: blur(6px);
-        background: rgba(0, 0, 0, 0.15);
-        z-index: 9998;
-        opacity: 0;
-        pointer-events: none; /* don’t block clicks */
-        transition: opacity 0.4s ease;
-      }
-      #relapse-blur.active {
-        opacity: 1;
-      }
+      <audio id="easter-audio" src="easter-egg.mp3" preload="auto"></audio>
 
-      /* ====== MESSENGER RAIN ====== */
-      .msg-wrapper {
-        position: fixed;
-        top: -120px;
-        left: 50vw; /* will be randomized */
-        z-index: 10000;
-        pointer-events: none;
-        animation: fall linear forwards; /* duration randomized per bubble */
-      }
-
-      .msg-bubble {
-        max-width: 260px;
-        padding: 10px 14px;
-        border-radius: 18px;
-        font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Arial, sans-serif;
-        word-wrap: break-word;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-        opacity: 0;
-        animation: sway ease-in-out infinite; /* duration randomized */
-      }
-      .msg-bubble.right {
-        background: #0084ff;
-        color: #fff;
-        margin-left: auto;
-      }
-      .msg-bubble.left {
-        background: #e4e6eb;
-        color: #111;
-        margin-right: auto;
-      }
-
-      @keyframes fall {
-        0% {
-          transform: translateY(0);
-          opacity: 0;
+      <style>
+        /* ====== MAIN WRAPPER FOR ZOOM ====== */
+        #main-content-wrapper {
+          transform: scale(0.67);
+          transform-origin: top left;
+          width: 150%;
+          height: 150%;
         }
-        10% {
+
+        /* ====== BASE LAYERS ====== */
+        #relapse-blur {
+          position: fixed;
+          inset: 0;
+          backdrop-filter: blur(6px);
+          background: rgba(0, 0, 0, 0.15);
+          z-index: 9998;
+          opacity: 0;
+          pointer-events: none; /* don’t block clicks */
+          transition: opacity 0.4s ease;
+        }
+        #relapse-blur.active {
           opacity: 1;
         }
-        100% {
-          transform: translateY(115vh);
+
+        /* ====== MESSENGER RAIN ====== */
+        .msg-wrapper {
+          position: fixed;
+          top: -120px;
+          left: 50vw; /* will be randomized */
+          z-index: 10000;
+          pointer-events: none;
+          animation: fall linear forwards; /* duration randomized per bubble */
+        }
+
+        .msg-bubble {
+          max-width: 260px;
+          padding: 10px 14px;
+          border-radius: 18px;
+          font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            Arial, sans-serif;
+          word-wrap: break-word;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
           opacity: 0;
+          animation: sway ease-in-out infinite; /* duration randomized */
         }
-      }
-      /* Sway uses translateX + the same rotation at each keyframe */
-      @keyframes sway {
-        0% {
-          transform: translateX(0) rotate(var(--rot));
+        .msg-bubble.right {
+          background: #0084ff;
+          color: #fff;
+          margin-left: auto;
         }
-        50% {
-          transform: translateX(var(--amp)) rotate(var(--rot));
+        .msg-bubble.left {
+          background: #e4e6eb;
+          color: #111;
+          margin-right: auto;
         }
-        100% {
-          transform: translateX(0) rotate(var(--rot));
-        }
-      }
 
-      /* ====== GLASSY NOTICE ====== */
-      #heal-notice {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 10001;
-        display: none;
-      }
-      #heal-notice .card {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 14px;
-        color: #fff;
-        background: rgba(30, 30, 40, 0.35);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-        text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
-        animation: popIn 0.35s ease both;
-        letter-spacing: 0.2px;
-      }
-      #heal-notice .icon {
-        width: 22px;
-        height: 22px;
-        display: grid;
-        place-items: center;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 999px;
-        box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.08);
-      }
-      #heal-notice .hint {
-        opacity: 0.9;
-        font-weight: 500;
-      }
-      @keyframes popIn {
-        from {
-          opacity: 0;
-          transform: translateY(8px) scale(0.98);
+        @keyframes fall {
+          0% {
+            transform: translateY(0);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(115vh);
+            opacity: 0;
+          }
         }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
+        /* Sway uses translateX + the same rotation at each keyframe */
+        @keyframes sway {
+          0% {
+            transform: translateX(0) rotate(var(--rot));
+          }
+          50% {
+            transform: translateX(var(--amp)) rotate(var(--rot));
+          }
+          100% {
+            transform: translateX(0) rotate(var(--rot));
+          }
         }
-      }
-      /* Updated CSS for the initial invisible overlay */
-      #initialOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: transparent; /* Makes the background invisible */
-        z-index: 2000;
-        cursor: pointer;
-      }
-    </style>
 
-    <div id="relapse-blur"></div>
+        /* ====== GLASSY NOTICE ====== */
+        #heal-notice {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 10001;
+          display: none;
+        }
+        #heal-notice .card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 14px;
+          border-radius: 14px;
+          color: #fff;
+          background: rgba(30, 30, 40, 0.35);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+          text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+          animation: popIn 0.35s ease both;
+          letter-spacing: 0.2px;
+        }
+        #heal-notice .icon {
+          width: 22px;
+          height: 22px;
+          display: grid;
+          place-items: center;
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          border-radius: 999px;
+          box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.08);
+        }
+        #heal-notice .hint {
+          opacity: 0.9;
+          font-weight: 500;
+        }
+        @keyframes popIn {
+          from {
+            opacity: 0;
+            transform: translateY(8px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        /* Updated CSS for the initial invisible overlay */
+        #initialOverlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: transparent; /* Makes the background invisible */
+          z-index: 2000;
+          cursor: pointer;
+        }
+      </style>
 
-    <div id="heal-notice" aria-live="polite">
-      <div class="card" role="note" aria-label="Type moveon to heal">
-        <div class="icon">💌</div>
-        <div class="hint">Type <b>moveon</b> to heal</div>
+      <div id="relapse-blur"></div>
+
+      <div id="heal-notice" aria-live="polite">
+        <div class="card" role="note" aria-label="Type moveon to heal">
+          <div class="icon">💌</div>
+          <div class="hint">Type <b>moveon</b> to heal</div>
+        </div>
       </div>
-    </div>
 
-    <div id="initialOverlay"></div>
+      <div id="initialOverlay"></div>
 
-    <script>
-      (() => {
-        const TRIGGER = "relapse";
-        const HEAL = "moveon";
+      <script>
+        (() => {
+          const TRIGGER = "relapse";
+          const HEAL = "moveon";
 
-        const audio = document.getElementById("easter-audio");
-        const blur = document.getElementById("relapse-blur");
-        const notice = document.getElementById("heal-notice");
+          const audio = document.getElementById("easter-audio");
+          const blur = document.getElementById("relapse-blur");
+          const notice = document.getElementById("heal-notice");
 
-        let active = false;
-        let keyBuf = "";
-        let rainTimer = null;
+          let active = false;
+          let keyBuf = "";
+          let rainTimer = null;
 
-        // --- Audio helpers ---
-        function fadeInAudio(aud, ms = 1200) {
-          if (!aud) return;
-          aud.volume = 0;
-          const steps = 20,
-            dt = ms / steps;
-          let i = 0;
-          const id = setInterval(() => {
-            i++;
-            aud.volume = Math.min(1, i / steps);
-            if (i >= steps) clearInterval(id);
-          }, dt);
-        }
-        function fadeOutAudio(aud, ms = 900) {
-          if (!aud) return;
-          const steps = 18,
-            dt = ms / steps;
-          let i = steps;
-          const id = setInterval(() => {
-            i--;
-            aud.volume = Math.max(0, i / steps);
-            if (i <= 0) {
-              clearInterval(id);
-              aud.pause();
+          // --- Audio helpers ---
+          function fadeInAudio(aud, ms = 1200) {
+            if (!aud) return;
+            aud.volume = 0;
+            const steps = 20,
+              dt = ms / steps;
+            let i = 0;
+            const id = setInterval(() => {
+              i++;
+              aud.volume = Math.min(1, i / steps);
+              if (i >= steps) clearInterval(id);
+            }, dt);
+          }
+          function fadeOutAudio(aud, ms = 900) {
+            if (!aud) return;
+            const steps = 18,
+              dt = ms / steps;
+            let i = steps;
+            const id = setInterval(() => {
+              i--;
+              aud.volume = Math.max(0, i / steps);
+              if (i <= 0) {
+                clearInterval(id);
+                aud.pause();
+              }
+            }, dt);
+          }
+
+          // --- Message spawning ---
+          const LINES = [
+            "Hey... I miss you.",
+            "We used to talk every night.",
+            "Do you remember our song?",
+            "I saw your post today...",
+            "It's been a while.",
+            "I hope you're okay.",
+            "I wish things were different.",
+            "You left me on seen...",
+            "Why did it have to end like this?",
+            "Typing...",
+          ];
+
+          function spawnMessage() {
+            if (!active) return;
+
+            // Wrapper controls vertical fall; inner bubble handles sway+rotate
+            const wrap = document.createElement("div");
+            wrap.className = "msg-wrapper";
+            wrap.style.left = 10 + Math.random() * 80 + "vw";
+            wrap.style.animationDuration =
+              (6 + Math.random() * 4).toFixed(2) + "s"; // 6–10s fall
+
+            const bubble = document.createElement("div");
+            bubble.className =
+              "msg-bubble " + (Math.random() > 0.5 ? "right" : "left");
+            bubble.textContent = LINES[(Math.random() * LINES.length) | 0];
+
+            // Random gentle tilt and sway amplitude (-36px to 36px)
+            const amp =
+              (Math.random() * 36 * (Math.random() > 0.5 ? 1 : -1)).toFixed(0) +
+              "px";
+            bubble.style.setProperty(
+              "--rot",
+              (Math.random() * 6 - 3).toFixed(2) + "deg"
+            );
+            bubble.style.setProperty("--amp", amp);
+            bubble.style.animationDuration =
+              (3 + Math.random() * 2).toFixed(2) + "s"; // 3–5s sway
+
+            // Mount
+            wrap.appendChild(bubble);
+            document.body.appendChild(wrap);
+
+            // Let CSS pick up, then show
+            requestAnimationFrame(() => {
+              bubble.style.opacity = 1;
+            });
+
+            // Cleanup after fall completes (plus a buffer)
+            const cleanAfter =
+              parseFloat(wrap.style.animationDuration) * 1000 + 400;
+            setTimeout(() => wrap.remove(), cleanAfter);
+          }
+
+          function startRain() {
+            if (active) return;
+            active = true;
+
+            // Visuals
+            blur.classList.add("active");
+            notice.style.display = "block";
+
+            // Music
+            if (audio) {
+              audio.currentTime = 0;
+              audio
+                .play()
+                .then(() => fadeInAudio(audio))
+                .catch(() => {
+                  // If the browser blocks autoplay, user just typed -> usually allowed.
+                  // If it still blocks, we just skip audio.
+                });
             }
-          }, dt);
-        }
 
-        // --- Message spawning ---
-        const LINES = [
-          "Hey... I miss you.",
-          "We used to talk every night.",
-          "Do you remember our song?",
-          "I saw your post today...",
-          "It's been a while.",
-          "I hope you're okay.",
-          "I wish things were different.",
-          "You left me on seen...",
-          "Why did it have to end like this?",
-          "Typing...",
-        ];
+            // Loop forever until "moveon"
+            spawnMessage();
+            rainTimer = setInterval(spawnMessage, 420); // density
+          }
 
-        function spawnMessage() {
-          if (!active) return;
+          function stopRain() {
+            if (!active) return;
+            active = false;
 
-          // Wrapper controls vertical fall; inner bubble handles sway+rotate
-          const wrap = document.createElement("div");
-          wrap.className = "msg-wrapper";
-          wrap.style.left = 10 + Math.random() * 80 + "vw";
-          wrap.style.animationDuration =
-            (6 + Math.random() * 4).toFixed(2) + "s"; // 6–10s fall
+            blur.classList.remove("active");
+            notice.style.display = "none";
 
-          const bubble = document.createElement("div");
-          bubble.className =
-            "msg-bubble " + (Math.random() > 0.5 ? "right" : "left");
-          bubble.textContent = LINES[(Math.random() * LINES.length) | 0];
+            clearInterval(rainTimer);
+            rainTimer = null;
 
-          // Random gentle tilt and sway amplitude (-36px to 36px)
-          const amp =
-            (Math.random() * 36 * (Math.random() > 0.5 ? 1 : -1)).toFixed(0) +
-            "px";
-          bubble.style.setProperty(
-            "--rot",
-            (Math.random() * 6 - 3).toFixed(2) + "deg"
-          );
-          bubble.style.setProperty("--amp", amp);
-          bubble.style.animationDuration =
-            (3 + Math.random() * 2).toFixed(2) + "s"; // 3–5s sway
+            // Fade out sound
+            fadeOutAudio(audio);
 
-          // Mount
-          wrap.appendChild(bubble);
-          document.body.appendChild(wrap);
+            // Remove remaining bubbles quickly
+            document.querySelectorAll(".msg-wrapper").forEach((w) => w.remove());
+          }
 
-          // Let CSS pick up, then show
-          requestAnimationFrame(() => {
-            bubble.style.opacity = 1;
+          // --- Keyboard listener ---
+          document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            const k = e.key.length === 1 ? e.key.toLowerCase() : "";
+            if (!/[a-z0-9]/.test(k)) return;
+
+            // Keep only the needed tail of the buffer
+            keyBuf = (keyBuf + k).slice(
+              -Math.max(TRIGGER.length, HEAL.length)
+            );
+
+            if (!active && keyBuf.endsWith(TRIGGER)) {
+              startRain();
+              keyBuf = "";
+            } else if (active && keyBuf.endsWith(HEAL)) {
+              stopRain();
+              keyBuf = "";
+            }
           });
-
-          // Cleanup after fall completes (plus a buffer)
-          const cleanAfter =
-            parseFloat(wrap.style.animationDuration) * 1000 + 400;
-          setTimeout(() => wrap.remove(), cleanAfter);
-        }
-
-        function startRain() {
-          if (active) return;
-          active = true;
-
-          // Visuals
-          blur.classList.add("active");
-          notice.style.display = "block";
-
-          // Music
-          if (audio) {
-            audio.currentTime = 0;
-            audio
-              .play()
-              .then(() => fadeInAudio(audio))
-              .catch(() => {
-                // If the browser blocks autoplay, user just typed -> usually allowed.
-                // If it still blocks, we just skip audio.
-              });
-          }
-
-          // Loop forever until "moveon"
-          spawnMessage();
-          rainTimer = setInterval(spawnMessage, 420); // density
-        }
-
-        function stopRain() {
-          if (!active) return;
-          active = false;
-
-          blur.classList.remove("active");
-          notice.style.display = "none";
-
-          clearInterval(rainTimer);
-          rainTimer = null;
-
-          // Fade out sound
-          fadeOutAudio(audio);
-
-          // Remove remaining bubbles quickly
-          document.querySelectorAll(".msg-wrapper").forEach((w) => w.remove());
-        }
-
-        // --- Keyboard listener ---
-        document.addEventListener("keydown", (e) => {
-          if (e.ctrlKey || e.metaKey || e.altKey) return;
-          const k = e.key.length === 1 ? e.key.toLowerCase() : "";
-          if (!/[a-z0-9]/.test(k)) return;
-
-          // Keep only the needed tail of the buffer
-          keyBuf = (keyBuf + k).slice(-Math.max(TRIGGER.length, HEAL.length));
-
-          if (!active && keyBuf.endsWith(TRIGGER)) {
-            startRain();
-            keyBuf = "";
-          } else if (active && keyBuf.endsWith(HEAL)) {
-            stopRain();
-            keyBuf = "";
-          }
-        });
-      })();
-    </script>
-    <div
-      id="popupOverlay"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Arial Black', sans-serif;
-      "
-    >
+        })();
+      </script>
       <div
-        id="popupBox"
+        id="popupOverlay"
         style="
-          background: white;
-          border: 3px solid white;
-          border-radius: 12px;
-          max-width: 600px;
-          width: 95%;
-          text-align: center;
-          color: white;
-          animation: popIn 0.6s ease-out;
-          overflow: hidden;
-          position: relative; /* Add this for 'X' button positioning */
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.9);
+          z-index: 1000;
+          justify-content: center;
+          align-items: center;
+          font-family: 'Arial Black', sans-serif;
         "
       >
-        <button
-          id="closeBtn"
-          style="
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 30px;
-            height: 30px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            line-height: 1;
-          "
-        >
-          &times;
-        </button>
-
-        <div style="width: 100%; background: transparent">
-          <img
-            src="/assets/Pink Teddy Bear Bible Verse Facebook Post-79c5b174.png"
-            alt="31 Hot Pizzas Banner"
-            style="width: 100%; display: block"
-          />
-
-          <video id="adVideo" width="100%" height="280" autoplay>
-            <source src="/assets/hotpizza-4863d9c1.mp4#t=17" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-
         <div
+          id="popupBox"
           style="
-            padding: 15px;
-            background: #ffffff;
-            border-top: 3px solid white;
+            background: white;
+            border: 3px solid white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 95%;
+            text-align: center;
+            color: white;
+            animation: popIn 0.6s ease-out;
+            overflow: hidden;
+            position: relative; /* Add this for 'X' button positioning */
           "
         >
           <button
-            id="startBtn"
+            id="closeBtn"
             style="
-              background: linear-gradient(90deg, #9900ff, #ff00ff);
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              width: 30px;
+              height: 30px;
+              background: rgba(0, 0, 0, 0.5);
               color: white;
               border: none;
-              padding: 12px 25px;
-              border-radius: 10px;
+              border-radius: 50%;
               cursor: pointer;
+              font-size: 16px;
               font-weight: bold;
-              margin-right: 10px;
-              text-transform: uppercase;
-              transition: 0.2s;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              line-height: 1;
             "
-            onmouseover="this.style.transform='scale(1.05)'"
-            onmouseout="this.style.transform='scale(1)'"
           >
-            Get Pizza 🍕
+            &times;
           </button>
 
-          <button
-            id="skipBtn"
+          <div style="width: 100%; background: transparent">
+            <img
+              src="/assets/Pink Teddy Bear Bible Verse Facebook Post-79c5b174.png"
+              alt="31 Hot Pizzas Banner"
+              style="width: 100%; display: block"
+            />
+
+            <video id="adVideo" width="100%" height="280" autoplay>
+              <source
+                src="/assets/hotpizza-4863d9c1.mp4#t=17"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div
             style="
-              background: transparent;
-              color: #000000;
-              border: none;
-              padding: 12px 25px;
-              border-radius: 10px;
-              cursor: pointer;
-              font-weight: bold;
-              text-transform: uppercase;
-              transition: 0.2s;
+              padding: 15px;
+              background: #ffffff;
+              border-top: 3px solid white;
             "
-            onmouseover="this.style.color='#ff00ff'"
-            onmouseout="this.style.color='#000000'"
           >
-            Skip Ad ✖
-          </button>
+            <button
+              id="startBtn"
+              style="
+                background: linear-gradient(90deg, #9900ff, #ff00ff);
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: bold;
+                margin-right: 10px;
+                text-transform: uppercase;
+                transition: 0.2s;
+              "
+              onmouseover="this.style.transform='scale(1.05)'"
+              onmouseout="this.style.transform='scale(1)'"
+            >
+              Get Pizza 🍕
+            </button>
+
+            <button
+              id="skipBtn"
+              style="
+                background: transparent;
+                color: #000000;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: bold;
+                text-transform: uppercase;
+                transition: 0.2s;
+              "
+              onmouseover="this.style.color='#ff00ff'"
+              onmouseout="this.style.color='#000000'"
+            >
+              Skip Ad ✖
+            </button>
+          </div>
         </div>
       </div>
+
+      <script>
+        const initialOverlay = document.getElementById("initialOverlay");
+        const popupOverlay = document.getElementById("popupOverlay");
+        const adVideo = document.getElementById("adVideo");
+        const closeBtn = document.getElementById("closeBtn");
+        const skipBtn = document.getElementById("skipBtn");
+
+        // Hide the initial overlay and show the ad pop-up on click
+        initialOverlay.addEventListener("click", () => {
+          initialOverlay.style.display = "none";
+          popupOverlay.style.display = "flex";
+          // Since the user has interacted, we can now play the video with sound
+          adVideo.play();
+        });
+
+        // Function to close the ad
+        function closeAd() {
+          popupOverlay.style.display = "none";
+          adVideo.pause(); // Pause video
+        }
+
+        // Skip Ad and X buttons both close the ad
+        skipBtn.addEventListener("click", closeAd);
+        closeBtn.addEventListener("click", closeAd);
+
+        // Optional: Start button alert
+        document.getElementById("startBtn").addEventListener("click", () => {
+          window.location.href =
+            "https://youtu.be/9WAuPqnxyak?si=DXUqEdBQjqMRGtCx"; // Redirect to pizza site
+        });
+      </script>
+
+      <style>
+        @keyframes popIn {
+          from {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      </style>
     </div>
-
-    <script>
-      const initialOverlay = document.getElementById("initialOverlay");
-      const popupOverlay = document.getElementById("popupOverlay");
-      const adVideo = document.getElementById("adVideo");
-      const closeBtn = document.getElementById("closeBtn");
-      const skipBtn = document.getElementById("skipBtn");
-
-      // Hide the initial overlay and show the ad pop-up on click
-      initialOverlay.addEventListener("click", () => {
-        initialOverlay.style.display = "none";
-        popupOverlay.style.display = "flex";
-        // Since the user has interacted, we can now play the video with sound
-        adVideo.play();
-      });
-
-      // Function to close the ad
-      function closeAd() {
-        popupOverlay.style.display = "none";
-        adVideo.pause(); // Pause video
-      }
-
-      // Skip Ad and X buttons both close the ad
-      skipBtn.addEventListener("click", closeAd);
-      closeBtn.addEventListener("click", closeAd);
-
-      // Optional: Start button alert
-      document.getElementById("startBtn").addEventListener("click", () => {
-        window.location.href =
-          "https://youtu.be/9WAuPqnxyak?si=DXUqEdBQjqMRGtCx"; // Redirect to pizza site
-      });
-    </script>
-
-    <style>
-      @keyframes popIn {
-        from {
-          transform: scale(0.8);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-    </style>
   </body>
 </html>
